@@ -44,15 +44,15 @@ static void print_mem(struct task_struct *task)
         }*/
 
         printk(KERN_INFO 
-        		 "Virtual memory Starts= 0x%lx, end= 0x%lx size=%lx \n"
-        		 "Code  Segment start = 0x%lx, end = 0x%lx, size=%lx \n"
-                 "Data  Segment start = 0x%lx, end = 0x%lx, size=%lx \n"
-                 "Argument  Segment start = 0x%lx, end = 0x%lx, size=%lx \n"
-                 "Env  Segment start = 0x%lx, end = 0x%lx, size=%lx \n"
-                 "Stack Segment start = 0x%lx, end = 0x%lx, size=%d \n"
-                 "Heap Segment start = 0x%lx, end = 0x%lx, size=%lx \n"
-                 "number of frames used= %d \n"
-                 "total vm pages used= %lx",
+        		 "Virtual memory Starts= 0x%lx, end= 0x%lx size=%lu \n"
+        		 "Code  Segment start = 0x%lx, end = 0x%lx, size=%lu \n"
+                 "Data  Segment start = 0x%lx, end = 0x%lx, size=%lu \n"
+                 "Argument  Segment start = 0x%lx, end = 0x%lx, size=%lu \n"
+                 "Env  Segment start = 0x%lx, end = 0x%lx, size=%lu \n"
+                 "Stack Segment start = 0x%lx, end = 0x%lx, size=%lu \n"
+                 "Heap Segment start = 0x%lx, end = 0x%lx, size=%lu \n"
+                 "number of frames used= %lu \n"
+                 "total vm pages used= %lu",
                  mm->start_code, vma->vm_end, vma->vm_end - mm->start_code,/*vm info*/
                  mm->start_code, mm->end_code, mm->end_code - mm->start_code,/*code info*/
                  mm->start_data, mm->end_data, mm->end_data - mm->start_data,/*data info*/
@@ -62,6 +62,12 @@ static void print_mem(struct task_struct *task)
                  mm->start_brk, mm->brk, mm->brk - mm->start_brk,/*heap info*/
                  mm->hiwater_rss,/*rss info*/
                  mm -> total_vm/*total vm info*/);
+                 
+         //page tabel info//
+         printk(KERN_INFO""
+				
+			);
+                 
 }
 static int __init hello_init(void)
 {
