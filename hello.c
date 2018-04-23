@@ -49,19 +49,19 @@ static void print_mem(struct task_struct *task)
                  "Data  Segment start = 0x%lx, end = 0x%lx, size=%lx \n"
                  "Argument  Segment start = 0x%lx, end = 0x%lx, size=%lx \n"
                  "Env  Segment start = 0x%lx, end = 0x%lx, size=%lx \n"
-                 "Stack Segment start = 0x%lx, end = 0x%lx, size=%lx \n"
+                 "Stack Segment start = 0x%lx, end = 0x%lx, size=%d \n"
                  "Heap Segment start = 0x%lx, end = 0x%lx, size=%lx \n"
                  "number of frames used= %d \n"
-                 "total vm pages used= %d",
-                 mm->start_code, vma->vm_end, vma->vm_end - mm->start_code,
-                 mm->start_code, mm->end_code, mm->end_code - mm->start_code,
-                 mm->start_data, mm->end_data, mm->end_data - mm->start_data,
-                 mm->arg_start, mm->arg_end, mm->arg_end - mm->arg_start,
-                 mm->env_start, mm->env_end, mm->env_end - mm->env_start,
-                 vma->vm_end,vma->vm_start , vma->vm_start - vma->vm_end,
-                 mm->start_brk, mm->brk, mm->brk - mm->start_brk,
-                 mm->hiwater_rss,
-                 mm->total_vm);
+                 "total vm pages used= %lx",
+                 mm->start_code, vma->vm_end, vma->vm_end - mm->start_code,/*vm info*/
+                 mm->start_code, mm->end_code, mm->end_code - mm->start_code,/*code info*/
+                 mm->start_data, mm->end_data, mm->end_data - mm->start_data,/*data info*/
+                 mm->arg_start, mm->arg_end, mm->arg_end - mm->arg_start,/*argument info*/
+                 mm->env_start, mm->env_end, mm->env_end - mm->env_start,/*environment info*/
+                 vma->vm_end, vma->vm_start, vma->vm_end - vma->vm_start,/*stack info*/
+                 mm->start_brk, mm->brk, mm->brk - mm->start_brk,/*heap info*/
+                 mm->hiwater_rss,/*rss info*/
+                 mm -> total_vm/*total vm info*/);
 }
 static int __init hello_init(void)
 {
