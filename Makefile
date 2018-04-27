@@ -1,6 +1,11 @@
 obj-m += hello.o
 
-all:
+all: app hello.o
+	
+app:
+	gcc -Wall -o app app.c
+
+hello.o:
 	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
 
 clean:
