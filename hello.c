@@ -28,12 +28,16 @@ MODULE_PARM_DESC(int, "Some porcess ID");
 static void print_mem(struct task_struct *task)
 {
         struct mm_struct *mm;
-        struct vm_area_struct *vma;
+        //struct vm_area_struct *vma_stack;
         int count = 0;
         mm = task->mm;
-        vma = mm->mmap;
-        while(vma->vm_next){
-        	vma= vma -> vm_next;
+        struct vm_area_struct *vma_stack = mm->mmap;
+        struct vm_area_struct *vma_heap = mm->mmap;
+        while(vma_stack->vm_next){
+        	vma_stack= vma_stack->vm_next;
+            if(count <4)
+                vma_heap = vma_heap->vm_next;
+            count++;
         }
 
         /*printk(KERN_INFO "\nThis mm_struct has %d vmas.\n", mm->map_count);
@@ -53,16 +57,17 @@ static void print_mem(struct task_struct *task)
                  "Heap Segment start = 0x%lx, end = 0x%lx, size=%lu \n"
                  "number of frames used= %lu \n"
                  "total vm pages used= %lu",
-                 mm->start_code, vma->vm_end, vma->vm_end - mm->start_code,/*vm info*/
+                 mm->start_code, vma_stack->vm_end, vma_stack->vm_end - mm->start_code,/*vm info*/
                  mm->start_code, mm->end_code, mm->end_code - mm->start_code,/*code info*/
                  mm->start_data, mm->end_data, mm->end_data - mm->start_data,/*data info*/
                  mm->arg_start, mm->arg_end, mm->arg_end - mm->arg_start,/*argument info*/
                  mm->env_start, mm->env_end, mm->env_end - mm->env_start,/*environment info*/
-                 vma->vm_end, vma->vm_start, vma->vm_end - vma->vm_start,/*stack info*/
-                 mm->start_brk, mm->brk, mm->brk - mm->start_brk,/*heap info*/
+                 vma_stack->vm_end, vma_stack->vm_start, vma_stack->vm_end - vma_stack->vm_start,/*stack info*/
+                 vma_heap->vm_end, vma_heap->vm_start, vma_heap->vm_end - vma_heap->vm_start,/*heap info*/
                  mm->hiwater_rss,/*rss info*/
                  mm -> total_vm/*total vm info*/);
                  
+         printk(KERN_INFO"hs%lx he%lx ts%lu",mm->start_brk, mm->brk, mm->brk - mm->start_brk);
          //page tabel info//
          printk(KERN_INFO""
 				
@@ -79,6 +84,7 @@ static int __init hello_init(void)
 		   if(p->pid == pid)
 		   	task = p;
 		}
+	printk(KERN_INFO "name = %s", task->comm); 
         print_mem(task);
         return 0;
 }
