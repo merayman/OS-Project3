@@ -1,6 +1,6 @@
 obj-m += hello.o
 
-all: app hello.o
+all: app hello.o app
 	
 app:
 	gcc -Wall -o app app.c

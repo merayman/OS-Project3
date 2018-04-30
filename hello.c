@@ -26,8 +26,8 @@ MODULE_AUTHOR("Omer Faruk Karakaya-Musab Erayman");
 
 #define for_each_process(p) \
 	for (p = &init_task ; (p = next_task(p)) != &init_task ; )
-pid_t pid;
-module_param(pid, int, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP);
+pid_t processid;
+module_param(processid, int, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP);
 MODULE_PARM_DESC(int, "Some porcess ID");
 static void print_mem(struct task_struct *task)
 {
@@ -105,7 +105,7 @@ static int __init hello_init(void)
 		//struct task_struct *task_ptr = mytask;
 		for_each_process(p)
 		{
-		   if(p->pid == pid)
+		   if(p->pid == processid)
 		   	task = p;
 		}
         print_mem(task);
