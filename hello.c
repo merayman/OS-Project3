@@ -7,6 +7,10 @@
 #include <linux/sched.h>
 #include <linux/proc_fs.h>
 #include <linux/mm.h>
+
+#define DEFAULT  "\033[0m"
+#define BOLD     "\033[1m"
+
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Omer Faruk Karakaya-Musab Erayman");
 /* 
@@ -28,50 +32,70 @@ MODULE_PARM_DESC(int, "Some porcess ID");
 static void print_mem(struct task_struct *task)
 {
         struct mm_struct *mm;
-        //struct vm_area_struct *vma_stack;
+        struct vm_area_struct *vma;
+		
+       
         int count = 0;
         mm = task->mm;
-        struct vm_area_struct *vma_stack = mm->mmap;
-        struct vm_area_struct *vma_heap = mm->mmap;
-        while(vma_stack->vm_next){
-        	vma_stack= vma_stack->vm_next;
-            if(count <4)
-                vma_heap = vma_heap->vm_next;
-            count++;
-        }
-
+        pgd_t *pgd = mm->pgd;
+        vma = mm->mmap;
+        while(vma->vm_next){
+        	vma= vma -> vm_next;
+			}
+		
         /*printk(KERN_INFO "\nThis mm_struct has %d vmas.\n", mm->map_count);
         for (vma = mm->mmap ; vma ; vma = vma->vm_next) {
                 printk(KERN_INFO "\nVma number %d: \n", ++count);
                 printk( KERN_INFO " Starts at 0x%lx, Ends at 0x%lx\n",
                           vma->vm_start, vma->vm_end);
         }*/
-
+		printk(KERN_INFO BOLD "\nMEMORY INFO\n"DEFAULT);
         printk(KERN_INFO 
-        		 "Virtual memory Starts= 0x%lx, end= 0x%lx size=%lu \n"
-        		 "Code  Segment start = 0x%lx, end = 0x%lx, size=%lu \n"
-                 "Data  Segment start = 0x%lx, end = 0x%lx, size=%lu \n"
-                 "Argument  Segment start = 0x%lx, end = 0x%lx, size=%lu \n"
-                 "Env  Segment start = 0x%lx, end = 0x%lx, size=%lu \n"
-                 "Stack Segment start = 0x%lx, end = 0x%lx, size=%lu \n"
-                 "Heap Segment start = 0x%lx, end = 0x%lx, size=%lu \n"
-                 "number of frames used= %lu \n"
-                 "total vm pages used= %lu",
-                 mm->start_code, vma_stack->vm_end, vma_stack->vm_end - mm->start_code,/*vm info*/
-                 mm->start_code, mm->end_code, mm->end_code - mm->start_code,/*code info*/
-                 mm->start_data, mm->end_data, mm->end_data - mm->start_data,/*data info*/
+        		 "Virtual memory Starts= 0x%lx, end= 0x%lx size=%lu kB \n"
+        		 "Code  Segment start = 0x%lx, end = 0x%lx, size=%lu kB\n"
+                 "Data  Segment start = 0x%lx, end = 0x%lx, size=%lu kB\n"
+                 "Argument  Segment start = 0x%lx, end = 0x%lx, size=%lu Bytes\n"
+                 "Env  Segment start = 0x%lx, end = 0x%lx, size=%lu Bytes\n"
+                 "Stack Segment start = 0x%lx, end = 0x%lx, size=%lu kB\n"
+                 "Heap Segment start = 0x%lx, end = 0x%lx, size=%lu Bytes\n"
+                 "number of frames used(VMRSS)= %lu \n"
+                 "total vm pages used= %lu\n",
+                 mm->start_code, vma->vm_end, mm->total_vm << (PAGE_SHIFT-10),/*vm info*/
+                 mm->start_code, mm->end_code, (PAGE_ALIGN(mm->end_code) - (mm->start_code & PAGE_MASK)) >> 10,/*code info*/
+                 mm->start_data, mm->end_data, mm->data_vm << (PAGE_SHIFT-10),/*data info*/
                  mm->arg_start, mm->arg_end, mm->arg_end - mm->arg_start,/*argument info*/
                  mm->env_start, mm->env_end, mm->env_end - mm->env_start,/*environment info*/
-                 vma_stack->vm_end, vma_stack->vm_start, vma_stack->vm_end - vma_stack->vm_start,/*stack info*/
-                 vma_heap->vm_end, vma_heap->vm_start, vma_heap->vm_end - vma_heap->vm_start,/*heap info*/
-                 mm->hiwater_rss,/*rss info*/
+                 //vma->vm_end, vma->vm_start, vma->vm_end - vma->vm_start,
+                 vma->vm_end, vma->vm_start, mm ->stack_vm << (PAGE_SHIFT-10),/*stack info*/
+                 mm->start_brk, mm->brk, (mm->brk - mm->start_brk),/*heap info*/
+                 ( get_mm_counter(mm, MM_ANONPAGES) + get_mm_counter(mm, MM_FILEPAGES)+ get_mm_counter(mm, MM_SHMEMPAGES) ),/*rss info*/
                  mm -> total_vm/*total vm info*/);
                  
-         printk(KERN_INFO"hs%lx he%lx ts%lu",mm->start_brk, mm->brk, mm->brk - mm->start_brk);
          //page tabel info//
-         printk(KERN_INFO""
-				
-			);
+         //printk(KERN_INFO "pgd_val = 0x%lx\n", pgd_val(*pgd));
+         //printk(KERN_INFO "pagetable baseaddres: \n",
+			//			pagetable
+			//);
+			int i = 0;
+			printk(KERN_INFO BOLD"\nPAGE TABLE INFO\n"DEFAULT);
+			while(i<512)
+			{
+				void *p_val = (void *)(pgd_val(pgd[i]));
+				if( p_val == NULL )
+					printk(KERN_INFO "PGD[%d]: %p\n",i,p_val);
+				else{
+					printk(KERN_INFO BOLD "\nPGD[%d]:" DEFAULT " 0x%p\t",i,p_val);
+					printk(KERN_INFO BOLD"PGD[%d]:" DEFAULT "  Present: %d \t",i,((int)(p_val)&1));
+					printk(KERN_INFO BOLD"PGD[%d]: " DEFAULT " Read\write: %d \t",i,((int)(p_val)&2) >>1);
+					printk(KERN_INFO BOLD"PGD[%d]: " DEFAULT " User\Supervisor: %d \t",i,((int)(p_val)&4) >>2);
+					printk(KERN_INFO BOLD"PGD[%d]: " DEFAULT " Write Through: %d \t",i,((int)(p_val)&8)>>3);
+					printk(KERN_INFO BOLD"PGD[%d]:" DEFAULT "  Cache Disabled: %d \t",i,((int)(p_val)&16)>>4);
+					printk(KERN_INFO BOLD"PGD[%d]:" DEFAULT "  Accessed: %d \t",i,((int)(p_val)&32)>>5);
+					printk(KERN_INFO BOLD"PGD[%d]: " DEFAULT " Dirty: %d \t",i,((int)(p_val)&64)>>6);
+					printk(KERN_INFO BOLD"PGD[%d]: " DEFAULT " Global: %d \n",i,((int)(p_val)&128)>>7);
+					}
+				i++;
+			}
                  
 }
 static int __init hello_init(void)
@@ -84,13 +108,12 @@ static int __init hello_init(void)
 		   if(p->pid == pid)
 		   	task = p;
 		}
-	printk(KERN_INFO "name = %s", task->comm); 
         print_mem(task);
         return 0;
 }
 static void __exit hello_exit(void)
 {
-        printk(KERN_INFO "Goodbye, world \n\n");
+        printk(KERN_INFO "Goodbye!\n\n");
 }
 module_init(hello_init);
 module_exit(hello_exit);
