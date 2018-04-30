@@ -77,6 +77,7 @@ static void print_mem(struct task_struct *task)
 			//			pagetable
 			//);
 			int i = 0;
+/*
 			printk(KERN_INFO BOLD"\nPAGE TABLE INFO\n"DEFAULT);
 			while(i<512)
 			{
@@ -95,7 +96,7 @@ static void print_mem(struct task_struct *task)
 					printk(KERN_INFO BOLD"PGD[%d]: " DEFAULT " Global: %d \n",i,((int)(p_val)&128)>>7);
 					}
 				i++;
-			}
+			}*/
                  
 }
 static int __init hello_init(void)
