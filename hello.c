@@ -69,7 +69,7 @@ static void print_mem(struct task_struct *task)
                  vma->vm_end, vma->vm_start, mm ->stack_vm << (PAGE_SHIFT-10),/*stack info*/
                  mm->start_brk, mm->brk, (mm->brk - mm->start_brk),/*heap info*/
                  ( get_mm_counter(mm, MM_ANONPAGES) + get_mm_counter(mm, MM_FILEPAGES)+ get_mm_counter(mm, MM_SHMEMPAGES) ),/*rss info*/
-                 mm -> total_vm/*total vm info*/);
+                 (PTRS_PER_PTE * sizeof(pte_t) * atomic_long_read(&mm->nr_ptes) * 512) >> 10/*total vm info*/);
                  
          //page tabel info//
          //printk(KERN_INFO "pgd_val = 0x%lx\n", pgd_val(*pgd));
