@@ -6,7 +6,7 @@ void recursiveFunc(int checkpoint){
 		printf("%d %s\n",10," recursive call has been made check stack size \n"
 				"Enter 1 to contiune 0 to return");
 		int input;
-		scanf("%d",input);
+		scanf("%d",&input);
 		if(input == 0) return;
 		else checkpoint = 10;
 	}else{
@@ -32,6 +32,7 @@ int main( ) {
 	   else if(size >0){
 		   memptr = (int*) malloc(size);
 		   printf( "%d byte memory allocated.\n",size);
+		   //free(memptr);
 		}
 		else{
 			if(memptr != NULL) free(memptr);
