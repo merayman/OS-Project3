@@ -66,7 +66,7 @@ static void print_mem(struct task_struct *task)
                  mm->arg_start, mm->arg_end, mm->arg_end - mm->arg_start,/*argument info*/
                  mm->env_start, mm->env_end, mm->env_end - mm->env_start,/*environment info*/
                  //vma->vm_end, vma->vm_start, vma->vm_end - vma->vm_start,
-                 vma->vm_end, vma->vm_start, mm ->stack_vm << (PAGE_SHIFT-10),/*stack info*/
+                 mm->start_stack, vma->vm_start, mm ->stack_vm << (PAGE_SHIFT-10),/*stack info*/
                  mm->start_brk, mm->brk, (mm->brk - mm->start_brk),/*heap info*/
                  ( get_mm_counter(mm, MM_ANONPAGES) + get_mm_counter(mm, MM_FILEPAGES)+ get_mm_counter(mm, MM_SHMEMPAGES) ),/*rss info*/
                  (PTRS_PER_PTE * sizeof(pte_t) * atomic_long_read(&mm->nr_ptes) * 512) >> 10/*total vm info*/);
