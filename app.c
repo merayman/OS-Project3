@@ -14,6 +14,7 @@ int main() {
    int size;
    int *memptr = NULL;
    pid_t pid = getpid();
+   int stack_iteration;
  
    printf("pid= %d\n",pid);
 
@@ -21,8 +22,10 @@ int main() {
 	   printf( "Enter a value to allocate, enter 0 to terminate, -1 to recursive call: \n");
 	   scanf("%d",&size);
 	   if(size <= -1){
-	   		int checkpoint = 100;
-	   		recursiveFunc(checkpoint);
+		   printf( "Enter number of recursive call greater than 0! \n");
+		   scanf("%d",&stack_iteration);
+	   	   //int checkpoint = 100;
+	   	   recursiveFunc(stack_iteration);
 	   }
 	   else if(size >0){
 		   memptr = (int*) malloc(size);
