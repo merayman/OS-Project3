@@ -6,9 +6,16 @@ int recursiveFunc(int n){
 	printf("Stack at %p\n", (void*)(&intt));
 	if(n>0)
 		recursiveFunc(n-1);
-	else
-		return;
-	
+	else{
+		int stack_iteration;
+		printf( "Enter number of recursive call greater than 0, to exit enter number less than 0! \n");
+		scanf("%d",&stack_iteration);
+		//int checkpoint = 100;
+		if(stack_iteration > 0)
+			recursiveFunc(stack_iteration);
+		if(stack_iteration <= 0)
+			return;
+	}
 }
 int main() {
    int size;
